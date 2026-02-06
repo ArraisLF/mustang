@@ -76,6 +76,12 @@ docker-compose up         # Subir PostgreSQL local
 - Não fazer squash de commits
 - Ao finalizar, abrir Pull Request para `main`
 
+### Submodules
+- `mustang-frontend/` e `mustang-backend/` são git submodules do repositório raiz
+- Commits e branches devem ser feitos **dentro de cada submodule** (cd para o diretório do submodule)
+- Após commitar dentro de um submodule, **sempre voltar ao repositório raiz** e commitar a referência atualizada do submodule (`git add mustang-frontend && git commit`)
+- Ao criar branches para uma feature que afeta ambos os projetos, criar a branch em cada submodule individualmente
+
 ## Estrutura de Pastas
 
 ```
