@@ -74,12 +74,14 @@ docker-compose up         # Subir PostgreSQL local
 - Criar branch a partir de `main`
 - Commits seguem boas práticas do Git (mensagens claras e descritivas)
 - Não fazer squash de commits
+- **Antes de abrir um PR**, rodar o build completo com testes (`./mvnw verify` no backend, `npm run build` no frontend) e garantir que tudo passa
 - Ao finalizar, abrir Pull Request para `main`
 
 ### Submodules
 - `mustang-frontend/` e `mustang-backend/` são git submodules do repositório raiz
+- **Antes de iniciar qualquer trabalho**, rodar `git submodule update --remote` no repositório raiz para garantir que os submodules estão atualizados com o remote
 - Commits e branches devem ser feitos **dentro de cada submodule** (cd para o diretório do submodule)
-- Após commitar dentro de um submodule, **sempre voltar ao repositório raiz** e commitar a referência atualizada do submodule (`git add mustang-frontend && git commit`)
+- Após commitar dentro de um submodule, **sempre voltar ao repositório raiz** e commitar a referência atualizada do submodule (`git add mustang-backend && git commit` ou `git add mustang-frontend && git commit`)
 - Ao criar branches para uma feature que afeta ambos os projetos, criar a branch em cada submodule individualmente
 
 ## Estrutura de Pastas
