@@ -1,0 +1,6 @@
+[submodule "mustang-frontend"]
+	path = mustang-frontend
+	url = git@github.com:ArraisLF/mustang-frontend.git
+[submodule "mustang-backend"]
+	path = mustang-backend
+	url = git@github.com:ArraisLF/mustang-api.git
