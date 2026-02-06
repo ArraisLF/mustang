@@ -4,123 +4,67 @@ Plataforma web para estudantes que se preparam para concursos públicos no Brasi
 
 ## Stack
 
-### Frontend (`mustang-frontend/`)
-- React 19 + Vite 7
-- Tailwind CSS (cores: primary #003366, secondary #009c3b, accent #ffcc00)
-- React Router 7
-- Axios para HTTP
-- JWT para autenticação (localStorage)
+- **Frontend** (`mustang-frontend/`): React 19, Vite 7, Tailwind CSS, React Router 7, Axios — see `mustang-frontend/CLAUDE.md`
+- **Backend** (`mustang-backend/`): Spring Boot 3.5, Java 21, Spring Security + JWT, JPA/Hibernate, PostgreSQL 16 — see `mustang-backend/CLAUDE.md`
+- **Infrastructure**: Railway (deploy), Docker Compose (local DB)
 
-### Backend (`mustang-backend/`)
-- Spring Boot 3.5 (Java 21)
-- Spring Security + JWT (JJWT)
-- JPA/Hibernate
-- PostgreSQL 16
-- Lombok
+## Conventions
 
-### Infraestrutura
-- Deploy: Railway
-- Banco local: Docker Compose
-- Git: Repositórios separados em `mustang-backend/` e `mustang-frontend/`
+- **UI always in Brazilian Portuguese** — all text, labels, messages, and placeholders must be in pt-BR
+- Code and comments in English
+- Environment variables for configuration
+- **For each plan implemented**: create a new branch and open a pull request against `develop`
 
-## Comandos
+## Git Flow
 
-### Frontend
-```bash
-cd mustang-frontend
-npm run dev      # Dev server (porta 5173)
-npm run build    # Build produção
-npm run lint     # ESLint
-```
+- **`main`** — production branch, only updated via merges from `develop`
+- **`develop`** — integration branch, all feature/hotfix PRs target this branch
+- Branch prefixes: `feature/` for new features, `hotfix/` for urgent fixes
+- Create branches from `develop`
+- Commits follow Git best practices (clear, descriptive messages)
+- No squash commits
+- **Before opening a PR**:
+  1. Run the full build with tests (`./mvnw verify` in backend, `npm run build` in frontend) and ensure everything passes
+  2. Diff the branch against `develop` and check each changed file against the docs — update any spec, ADR, or CLAUDE.md that is now stale:
+     - New or changed endpoints → update `mustang-backend/specs/api-contracts.md`
+     - New or changed components → update `mustang-frontend/specs/components.md`
+     - Changes to an existing feature's behavior → update the relevant `specs/*.md`
+     - New architectural pattern or significant trade-off → add an ADR to `specs/architecture-decisions.md`
+     - New convention, command, or package → update the relevant `CLAUDE.md` (root, backend, or frontend)
+- When done, open a Pull Request to `develop`
 
-### Backend
-```bash
-cd mustang-backend
-./mvnw spring-boot:run    # Rodar aplicação
-./mvnw clean install      # Build
-./mvnw test               # Testes
-```
+## Submodules
 
-### Banco de dados
-```bash
-docker-compose up         # Subir PostgreSQL local
-```
+- `mustang-frontend/` and `mustang-backend/` are git submodules of the root repository
+- **Before starting any work**, run `git submodule update --remote` in the root repository to ensure submodules are up to date with the remote
+- Commits and branches must be made **inside each submodule** (cd to the submodule directory)
+- After committing inside a submodule, **always return to the root repository** and commit the updated submodule reference (`git add mustang-backend && git commit` or `git add mustang-frontend && git commit`)
+- When creating branches for a feature that affects both projects, create the branch in each submodule individually
 
-## Convenções
-
-### Geral
-- **UI sempre em português brasileiro** - todos os textos, labels, mensagens e placeholders devem estar em pt-BR
-- Código e comentários em inglês
-- Variáveis de ambiente para configuração
-- **Para cada plano implementado**: criar uma nova branch e abrir um pull request contra main
+## Environment Variables
 
 ### Frontend
-- Componentes funcionais com hooks
-- Arquivos `.jsx` em PascalCase
-- Tailwind para estilos (sem CSS modules)
-- Context API para estado global (AuthContext)
-- API base URL via `VITE_API_URL`
+- `VITE_API_URL` — Backend API base URL
 
 ### Backend
-- Pacotes por feature: `com.mustang.backend.<feature>` (auth, user, feed, common)
-- Lombok para reduzir boilerplate (@Data, @RequiredArgsConstructor)
-- Injeção de dependência por construtor
-- Endpoints REST em `/api/*`
-- **Nunca retornar entidades JPA diretamente na API** - sempre usar DTOs (Response classes)
-- DTOs usam padrão `<Feature>Response` com método estático `from(Entity)` para conversão
+- `DATABASE_URL` — PostgreSQL connection URL
+- `DATABASE_USERNAME` — Database user
+- `DATABASE_PASSWORD` — Database password
+- `FRONTEND_URL` — Frontend URL (CORS)
+- `JWT_SECRET` — Secret key for JWT tokens
 
-### Git Flow
-- Branch prefixes: `feature/` para novas funcionalidades, `hotfix/` para correções urgentes
-- Criar branch a partir de `main`
-- Commits seguem boas práticas do Git (mensagens claras e descritivas)
-- Não fazer squash de commits
-- **Antes de abrir um PR**, rodar o build completo com testes (`./mvnw verify` no backend, `npm run build` no frontend) e garantir que tudo passa
-- Ao finalizar, abrir Pull Request para `main`
+## Database
 
-### Submodules
-- `mustang-frontend/` e `mustang-backend/` são git submodules do repositório raiz
-- **Antes de iniciar qualquer trabalho**, rodar `git submodule update --remote` no repositório raiz para garantir que os submodules estão atualizados com o remote
-- Commits e branches devem ser feitos **dentro de cada submodule** (cd para o diretório do submodule)
-- Após commitar dentro de um submodule, **sempre voltar ao repositório raiz** e commitar a referência atualizada do submodule (`git add mustang-backend && git commit` ou `git add mustang-frontend && git commit`)
-- Ao criar branches para uma feature que afeta ambos os projetos, criar a branch em cada submodule individualmente
-
-## Estrutura de Pastas
-
-```
-projeto-mustang/
-├── mustang-frontend/
-│   └── src/
-│       ├── components/    # Componentes reutilizáveis (Header, BottomNav, Feed)
-│       ├── pages/         # Páginas (LoginPage)
-│       ├── context/       # Context API (AuthContext)
-│       └── assets/        # Imagens e SVGs
-├── mustang-backend/
-│   └── src/main/java/com/mustang/backend/
-│       ├── auth/          # Autenticação (AuthController, AuthService, DTOs)
-│       ├── user/          # Usuários (User entity, UserRepository)
-│       ├── feed/          # Feed (FeedItem, FeedItemResponse, FeedService, FeedController)
-│       └── common/        # Código compartilhado
-│           ├── config/    # Configurações Spring (CORS, etc)
-│           └── security/  # JWT e filtros de segurança
-└── docker-compose.yml
+```bash
+docker-compose up         # Start local PostgreSQL
 ```
 
-## Variáveis de Ambiente
+## Specs
 
-### Frontend
-- `VITE_API_URL` - URL base da API
-
-### Backend
-- `DATABASE_URL` - URL do PostgreSQL
-- `DATABASE_USERNAME` - Usuário do banco
-- `DATABASE_PASSWORD` - Senha do banco
-- `FRONTEND_URL` - URL do frontend (CORS)
-- `JWT_SECRET` - Chave secreta para tokens JWT
-
-## Notas
-
-- Design mobile-first
-- Autenticação stateless via JWT
-- Feed items têm tipos: TIP, NEWS, RESULT, POST
-- Usuário padrão criado no startup para desenvolvimento
-- DTOs computam campos derivados (ex: `authorName` vem do User entity para posts de usuários)
+Feature specifications and architecture decisions are documented in the `specs/` directory:
+- `specs/auth.md` — Authentication & registration
+- `specs/feed.md` — Feed & posts
+- `specs/error-logging.md` — Client error logging
+- `specs/architecture-decisions.md` — ADRs
+- `mustang-backend/specs/api-contracts.md` — REST endpoint reference
+- `mustang-frontend/specs/components.md` — Component inventory
