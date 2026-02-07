@@ -83,6 +83,9 @@ docker-compose up         # Subir PostgreSQL local
 - Commits e branches devem ser feitos **dentro de cada submodule** (cd para o diretório do submodule)
 - Após commitar dentro de um submodule, **sempre voltar ao repositório raiz** e commitar a referência atualizada do submodule (`git add mustang-backend && git commit` ou `git add mustang-frontend && git commit`)
 - Ao criar branches para uma feature que afeta ambos os projetos, criar a branch em cada submodule individualmente
+- **Após um PR ser mergeado**, executar o procedimento de sync dos submodules:
+  1. Dentro de cada submodule afetado: `git checkout main && git pull`
+  2. Voltar ao repositório raiz: `git add mustang-frontend mustang-backend && git commit -m "Update submodule refs to latest main"`
 
 ## Estrutura de Pastas
 
