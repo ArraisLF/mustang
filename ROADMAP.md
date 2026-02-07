@@ -29,7 +29,7 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 10 User-Generated Posts    (no deps)
 11 Notification System     (no deps)
 12 Comments on Posts       (no deps)
-13 Post Type & Subject     (no deps) ──► 14 Feed Search & Filters
+14 Feed Search & Filters   (no deps)
 ```
 
 ---
@@ -422,39 +422,6 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 
 ---
 
-## 13. Post Type & Subject Selection
-
-| | |
-|---|---|
-| **Effort** | M |
-| **Status** | Ready for work |
-| **Scope** | Backend + Frontend |
-| **Dependencies** | None |
-
-**Description:** When creating a post, users should be able to select the post type (TIP, NEWS, RESULT, POST) and a subject (e.g., "Direito Constitucional", "Portugues"). Currently the backend hardcodes `type="POST"` for all user-created posts and the `FeedItem` entity has no `subject` field. The subject should display as a colored pill/badge on the post card in the feed (see screenshot reference: pill appears top-right of the post card).
-
-### Subtasks
-
-- [ ] Backend: Add `subject` field to `FeedItem` entity (nullable, VARCHAR)
-- [ ] Backend: Flyway migration to add `subject` column to `feed_items` table
-- [ ] Backend: Add `type` and `subject` fields to `CreatePostRequest` DTO (type optional, defaults to POST; subject optional)
-- [ ] Backend: Update `FeedService.createPost()` to use the user-provided type instead of hardcoding "POST"
-- [ ] Backend: Add `subject` to `FeedItemResponse` DTO and `from()` method
-- [ ] Backend: Seed data for available subjects (or use a predefined list shared with task #3)
-- [ ] Frontend: Add type selector to `CreatePostForm` (dropdown or button group: Dica, Noticia, Resultado, Publicacao)
-- [ ] Frontend: Add subject selector to `CreatePostForm` (dropdown with common exam subjects)
-- [ ] Frontend: Update `FeedPost` component to display subject as a colored pill/badge
-- [ ] Frontend: Subject pill styling (background color based on subject, rounded, positioned top-right of card)
-
-### Acceptance criteria
-
-- User can select a post type when creating a post
-- User can optionally select a subject when creating a post
-- Subject displays as a colored pill on the post card in the feed
-- Existing posts without a subject continue to render correctly
-
----
-
 ## 14. Feed Search & Filters
 
 | | |
@@ -462,7 +429,7 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 | **Effort** | M |
 | **Status** | Ready for work |
 | **Scope** | Backend + Frontend |
-| **Dependencies** | #13 (subject field must exist) |
+| **Dependencies** | None |
 
 **Description:** Add a search box and filter controls to the feed so users can filter posts by subject, type, and a free-text query. Currently the feed only supports chronological pagination with no filtering.
 
