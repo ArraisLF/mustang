@@ -21,7 +21,7 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 ```
 1 Email System ✅ ──┬──► 2 Complete User Profile ──┬──► 3 Student Objectives ──┬──► 4 Questions System
                     │                               │                          │
-7 File Upload ──────┘                               │                          ├──► 5 Study Planner ──► 6 Focus Timer
+7 File Upload ✅ ────┘                               │                          ├──► 5 Study Planner ──► 6 Focus Timer
                     │                               │
                     └──► 8 Password Reset (BE ✅)   └──► 15 User Journey Tracking (also depends on #3)
 
@@ -232,36 +232,35 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 
 ---
 
-## 7. File/Image Upload
+## ~~7. File/Image Upload~~ ✅
 
 | | |
 |---|---|
 | **Effort** | M |
-| **Status** | Needs clarification |
-| **Scope** | Backend |
+| **Status** | Done |
+| **Scope** | Backend + Frontend |
 | **Dependencies** | None |
+| **PRs** | [Backend #15](https://github.com/ArraisLF/mustang-api/pull/15), [Frontend #14](https://github.com/ArraisLF/mustang-frontend/pull/14) |
 
-**Description:** Currently all media in the platform uses external URLs. Adding file upload support is needed for avatar uploads (task 2) and potentially question images (task 4).
-
-### Open questions
-
-- Which storage provider? (AWS S3, Cloudflare R2, Railway volume?)
-- Max file size? Image compression/resize on upload?
+**Description:** File upload pipeline using Cloudflare R2 (S3-compatible, zero egress). Includes server-side image resize (max 1200px width), database tracking, REST endpoint, and reusable frontend hook/component.
 
 ### Subtasks
 
-- [ ] Backend: Choose and configure storage provider (S3-compatible SDK)
-- [ ] Backend: New `storage` package with `StorageService` interface
-- [ ] Backend: Upload endpoint `POST /api/uploads` (multipart, returns URL)
-- [ ] Backend: File validation (type whitelist, size limit)
-- [ ] Backend: Image resize/thumbnail generation (optional)
-- [ ] Backend: Flyway migration for uploads tracking table (optional)
+- [x] Backend: Cloudflare R2 via AWS S3 SDK (`software.amazon.awssdk:s3`)
+- [x] Backend: New `storage` package with `StorageService` interface + `R2StorageService`
+- [x] Backend: Upload endpoint `POST /api/uploads` (multipart, returns URL)
+- [x] Backend: File validation (JPEG, PNG, GIF, WebP; max 5MB)
+- [x] Backend: Image resize with Thumbnailator (max 1200px width, skips GIFs)
+- [x] Backend: Flyway migration for `uploaded_files` table (V11)
+- [x] Backend: `UploadedFile` entity, `UploadResponse` DTO, exception handlers
+- [x] Frontend: `useFileUpload` hook (validation, progress tracking, error handling)
+- [x] Frontend: `FileUploadInput` component (drag & drop, preview, progress bar)
 
 ### Acceptance criteria
 
-- Files can be uploaded and a public URL is returned
-- File type and size validation works
-- Uploaded files are accessible via returned URL
+- ~~Files can be uploaded and a public URL is returned~~ ✅
+- ~~File type and size validation works~~ ✅
+- ~~Uploaded files are accessible via returned URL~~ ✅
 
 ---
 
