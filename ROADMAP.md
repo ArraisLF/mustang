@@ -19,11 +19,11 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 ## Dependency Graph
 
 ```
-1 Email System ─────┬──► 2 Complete User Profile ──┬──► 3 Student Objectives ──┬──► 4 Questions System
+1 Email System ✅ ──┬──► 2 Complete User Profile ──┬──► 3 Student Objectives ──┬──► 4 Questions System
                     │                               │                          │
 7 File Upload ──────┘                               │                          ├──► 5 Study Planner ──► 6 Focus Timer
                     │                               │
-                    └──► 8 Password Reset           └──► 15 User Journey Tracking (also depends on #3)
+                    └──► 8 Password Reset (BE ✅)   └──► 15 User Journey Tracking (also depends on #3)
 
 9 CI/CD Pipeline           (no deps)
 10 User-Generated Posts    (no deps)
@@ -34,36 +34,33 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 
 ---
 
-## 1. Email System
+## ~~1. Email System~~ ✅
 
 | | |
 |---|---|
 | **Effort** | M |
-| **Status** | Needs clarification |
+| **Status** | Done |
 | **Scope** | Backend |
 | **Dependencies** | None |
+| **PR** | [#14](https://github.com/ArraisLF/mustang-api/pull/14) |
 
-**Description:** Add transactional email support (welcome emails, password reset, notifications). No SMTP or email config exists today.
-
-### Open questions
-
-- Which provider? (SendGrid, AWS SES, SMTP relay?)
-- Which emails to send initially? (welcome, password reset, study reminders?)
+**Description:** Transactional email support using Spring Boot Starter Mail (SMTP relay) with Thymeleaf templates. Includes welcome email, email verification (soft), and password reset flow.
 
 ### Subtasks
 
-- [ ] Choose and configure email provider (Spring Boot Starter Mail or vendor SDK)
-- [ ] Create email template engine (Thymeleaf HTML templates)
-- [ ] Implement email service with async sending (`@Async`)
-- [ ] Add welcome email on registration
-- [ ] Add email verification flow (token-based)
-- [ ] Add rate limiting to prevent email abuse
+- [x] Choose and configure email provider (Spring Boot Starter Mail, SMTP relay)
+- [x] Create email template engine (Thymeleaf HTML templates in pt-BR)
+- [x] Implement email service with async sending (`@Async`)
+- [x] Add welcome email on registration
+- [x] Add email verification flow (token-based, 24h expiry)
+- [x] Add rate limiting to prevent email abuse (3 req/15min per email per action)
+- [x] Add password reset backend (token-based, 30min expiry)
 
 ### Acceptance criteria
 
-- New users receive a welcome email on registration
-- Email verification flow works end-to-end
-- Emails render correctly on major clients (Gmail, Outlook)
+- ~~New users receive a welcome email on registration~~ ✅
+- ~~Email verification flow works end-to-end~~ ✅
+- ~~Emails render correctly on major clients (Gmail, Outlook)~~ ✅
 
 ---
 
@@ -274,17 +271,17 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 |---|---|
 | **Effort** | S |
 | **Status** | Ready for work |
-| **Scope** | Backend + Frontend |
-| **Dependencies** | #1 (email system) |
+| **Scope** | Frontend only (backend done in #1) |
+| **Dependencies** | #1 (email system) ✅ |
 
-**Description:** Users currently have no way to recover a forgotten password. Add a "forgot password" flow using email-based reset tokens.
+**Description:** Users currently have no way to recover a forgotten password. The backend endpoints and token system were implemented as part of Task #1 (Email System). Only the frontend pages remain.
 
 ### Subtasks
 
-- [ ] Backend: `POST /api/auth/forgot-password` - sends reset email with token
-- [ ] Backend: `POST /api/auth/reset-password` - validates token, updates password
-- [ ] Backend: PasswordResetToken entity (token, userId, expiresAt, used)
-- [ ] Backend: Flyway migration
+- [x] Backend: `POST /api/email/forgot-password` - sends reset email with token (done in #1)
+- [x] Backend: `POST /api/email/reset-password` - validates token, updates password (done in #1)
+- [x] Backend: Token entity with 30min expiry, reuses `email_tokens` table (done in #1)
+- [x] Backend: Flyway migration (done in #1, V10)
 - [ ] Frontend: "Esqueceu sua senha?" link on login form
 - [ ] Frontend: Forgot password page (enter email)
 - [ ] Frontend: Reset password page (enter new password, from email link)
@@ -292,7 +289,7 @@ Pending features for Projeto Mustang. Each task includes description, status, sc
 ### Acceptance criteria
 
 - User can request a password reset via email
-- Reset link expires after a reasonable time (e.g., 1 hour)
+- ~~Reset link expires after a reasonable time (e.g., 1 hour)~~ ✅ (30min expiry)
 - User can set a new password and login
 
 ---
